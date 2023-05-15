@@ -1,29 +1,33 @@
 class HttpService {
+  baseURL: string;
   endpoint: string;
 
   constructor(endpoint: string) {
-    this.endpoint = endpoint;
+    this.baseURL = 'https://jsonplaceholder.typicode.com'; //import.meta.env.VITE_API_URL
+    this.endpoint = this.baseURL + endpoint;
   }
-
-  async getAll<T>(): Promise<{ data: T[]; cancel: () => void }> {
+  
+  getAll<T>(): { request: Promise<T[]>, cancel: () => void } {
     const controller = new AbortController();
-    const response = await fetch(this.endpoint, { signal: controller.signal });
-    const data = await response.json();
+
+    const request = fetch(this.endpoint, { signal: controller.signal })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Request failed with status ' + response.status);
+      }
+      return response.json() as Promise<T[]>;
+    });
 
     const cancel = () => {
       controller.abort();
     };
-    
-    return { data, cancel };
+
+    return { request, cancel };
   }
 }
 
-//const create = (endpoint: string) => new HttpService(endpoint);
-
-//export default create;
 
 function createHttpService(endpoint: string): HttpService {
-  // Perform additional logic or customization if needed
   return new HttpService(endpoint);
 }
 

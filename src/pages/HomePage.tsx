@@ -1,47 +1,8 @@
-import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
-
-interface User {
-  id: number;
-  name: string;
-}
+import useUsers from '../hooks/useUsers';
 
 export default function HomePage() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [error, setError] = useState('');
-  const [isLoading, setLoading] = useState(true);
-
-  
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          'https://jsonplaceholder.typicode.com/users',
-          { signal }
-        );
-        const data = await response.json();
-        setUsers(data);
-        setLoading(false);
-      } catch (err: any) {
-        if (err instanceof Error) {
-          if (err.name === 'AbortError') return;
-        }
-        //only display non-abort errors to user:
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      controller.abort();
-    };
-  }, []);
+  const { users, error, isLoading } = useUsers();
 
   return (
     <>
