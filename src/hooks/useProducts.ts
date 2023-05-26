@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react';
-import userService, { User } from '../services/UserService';
+import productService, { Product } from '../services/ProductService';
 
-const useUsers = () => {
-  const [users, setUsers] = useState<User[]>([]);
+const useProducts = () => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState('');
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { request, cancel } = userService.getAll<User>();
+    const { request, cancel } = productService.getAll<Product>();
     //console.log(request);
 
-    request.then((data) => {
+    request
+      .then((data) => {
         //console.log(data);
-        setUsers(data);
+        setProducts(data);
         setLoading(false);
       })
       .catch((error) => {
@@ -23,7 +24,7 @@ const useUsers = () => {
 
     return () => cancel();
   }, []);
-  return { users, error, isLoading, setUsers, setError }
+  return { products, error, isLoading, setProducts, setError };
 };
 
-export default useUsers;
+export default useProducts;

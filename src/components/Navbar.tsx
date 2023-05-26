@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Disclosure } from '@headlessui/react';
 import {
   Bars3Icon,
@@ -7,12 +7,13 @@ import {
 } from '@heroicons/react/24/outline';
 import { Link, useLocation } from 'react-router-dom';
 import Cart from './Cart';
+import CartContext from '../contexts/cartContext';
 
 const navigation = [
   { name: 'Home', to: '/' },
   { name: 'Products', to: '/products' },
-  { name: 'About', href: '#' },
-  { name: 'FAQ', href: '#' },
+  /*{ name: 'About', to: '/about' },*/
+  { name: 'FAQs', to: '/faq' },
 ];
 
 function classNames(...classes: string[]) {
@@ -22,6 +23,7 @@ function classNames(...classes: string[]) {
 export default function Navbar() {
   const [cartOpen, setCartOpen] = useState(false);
   const location = useLocation();
+  const { cartItems } = useContext(CartContext);
 
   const handleCartOpen = () => {
     setCartOpen(true);
@@ -30,6 +32,12 @@ export default function Navbar() {
   const handleCartClose = () => {
     setCartOpen(false);
   };
+
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      handleCartOpen();
+    }
+  }, [cartItems]);
 
   return (
     <Disclosure as='nav' className='bg-gray-800'>
@@ -81,34 +89,36 @@ export default function Navbar() {
                   <span className='sr-only'>Shopping Bag</span>
                   <ShoppingBagIcon className='h-6 w-6' aria-hidden='true' />
                 </button>
-                <Cart open={cartOpen} onCloseCart={handleCartClose}/>
+                <Cart open={cartOpen} onCloseCart={handleCartClose} />
               </div>
             </div>
           </div>
 
           {/* Mobile Panel */}
-          <Disclosure.Panel className='sm:hidden'>
-            <ul className='space-y-1 px-2 pb-3 pt-2'>
-              {navigation.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    to={`${item.to}`}
-                    className={classNames(
-                      location.pathname === item.to
-                        ? 'bg-gray-900 text-white'
-                        : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                      'block rounded-md px-3 py-2 text-base font-medium'
-                    )}
-                    aria-current={
-                      location.pathname === item.to ? 'page' : undefined
-                    }
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </Disclosure.Panel>
+          <header className=''>
+            <Disclosure.Panel className='sm:hidden'>
+              <ul className='space-y-1 px-2 pb-3 pt-2'>
+                {navigation.map((item) => (
+                  <li key={item.name}>
+                    <Link
+                      to={`${item.to}`}
+                      className={classNames(
+                        location.pathname === item.to
+                          ? 'bg-gray-900 text-white'
+                          : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                        'block rounded-md px-3 py-2 text-base font-medium'
+                      )}
+                      aria-current={
+                        location.pathname === item.to ? 'page' : undefined
+                      }
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </Disclosure.Panel>
+          </header>
         </>
       )}
     </Disclosure>
