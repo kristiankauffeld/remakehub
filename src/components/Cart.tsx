@@ -56,7 +56,7 @@ export default function Cart({ open, onCloseCart }: Props) {
   async function handleCheckout(event: any) {
     event.preventDefault();
 
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/checkouts/create-checkout-session`,
+    await fetch( `${import.meta.env.VITE_API_URL}/checkouts/create-checkout-session`,
       {
         method: 'POST',
         headers: {
@@ -65,9 +65,7 @@ export default function Cart({ open, onCloseCart }: Props) {
         body: JSON.stringify(cartItems),
       }
     )
-      .then((response) => {
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((response) => {
         window.location.assign(response.url);
       });
