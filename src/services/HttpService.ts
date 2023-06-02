@@ -7,22 +7,12 @@ class HttpService {
     this.endpoint = this.baseURL + endpoint;
   }
   
-  getAll<T>(): { request: Promise<T[]>, cancel: () => void } {
-    const controller = new AbortController();
-
-    const request = fetch(this.endpoint, { signal: controller.signal })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Request failed with status ' + response.status);
-      }
-      return response.json() as Promise<T[]>;
-    });
-
-    const cancel = () => {
-      controller.abort();
-    };
-
-    return { request, cancel };
+  getAll = async <T>(): Promise<T[]> => {
+    const response = await fetch(this.endpoint);
+    if (!response.ok) {
+      throw new Error('Request failed with status ' + response.status);
+    }
+    return await (response.json() as Promise<T[]>);
   }
   
   getById<T>(id: number): { request: Promise<T>; cancel: () => void } {

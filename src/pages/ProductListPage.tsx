@@ -1,6 +1,20 @@
+import { GoeeyBallsTwo } from 'react-svg-spinners';
 import ProductList from '../components/ProductList';
+import useProducts from '../hooks/useProducts';
 
 export default function ProductListPage() {
+  const { error, isLoading } = useProducts();
+
+  if (isLoading) {
+    return (
+      <div className='flex justify-center pt-80'>
+        <GoeeyBallsTwo width={50} height={100} dur={0.8} />
+      </div>
+    );
+  }
+
+  if (error) return <p>{error.message}</p>;
+
   return (
     <>
       {/*PRODUCT LIST */}

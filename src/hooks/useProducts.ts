@@ -1,12 +1,15 @@
-import { useEffect, useState } from 'react';
 import productService, { Product } from '../services/ProductService';
+import { useQuery } from '@tanstack/react-query';
+import { CACHE_KEY_PRODUCTS } from '../constants';
 
 const useProducts = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [error, setError] = useState('');
-  const [isLoading, setLoading] = useState(true);
+  return useQuery<Product[], Error>({
+    queryKey: CACHE_KEY_PRODUCTS,
+    queryFn: productService.getAll,
+    staleTime: 1 * 60 * 1000 // 1 minute in milliseconds
+  });
 
-  useEffect(() => {
+  /*useEffect(() => {
     const { request, cancel } = productService.getAll<Product>();
     //console.log(request);
 
@@ -23,8 +26,8 @@ const useProducts = () => {
       });
 
     return () => cancel();
-  }, []);
-  return { products, error, isLoading, setProducts, setError };
+  }, []);*/
+  //return { products, error, isLoading, setProducts, setError };
 };
 
 export default useProducts;
