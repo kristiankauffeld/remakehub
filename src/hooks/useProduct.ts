@@ -1,30 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import productService, { Product } from '../services/ProductService';
+import { CACHE_KEY_PRODUCT } from '../constants';
 
 const useProduct = (id: number) => {
-  const [product, setProduct] = useState<Product>();
-  const [error, setError] = useState('');
-  const [isLoading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const { request, cancel } = productService.getById<Product>(id);
-    //console.log(request);
-
-    request
-      .then((data) => {
-        //console.log(data);
-        setProduct(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        if (error instanceof Error && error.name === 'AbortError') return;
-        setError(error.message);
-        setLoading(false);
-      });
-
-    return () => cancel();
-  }, []);
-  return { product, error, isLoading, setProduct, setError };
+  return useQuery<Product, Error>({
+    queryKey: CACHE_KEY_PRODUCT(id),
+    queryFn: () => productService.getById(id),
+    staleTime: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+  });
 };
 
 export default useProduct;

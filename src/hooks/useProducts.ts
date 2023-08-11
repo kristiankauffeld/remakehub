@@ -6,28 +6,8 @@ const useProducts = () => {
   return useQuery<Product[], Error>({
     queryKey: CACHE_KEY_PRODUCTS,
     queryFn: productService.getAll,
-    staleTime: 1 * 60 * 1000 // 1 minute in milliseconds
+    staleTime: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
   });
-
-  /*useEffect(() => {
-    const { request, cancel } = productService.getAll<Product>();
-    //console.log(request);
-
-    request
-      .then((data) => {
-        //console.log(data);
-        setProducts(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        if (error instanceof Error && error.name === 'AbortError') return;
-        setError(error.message);
-        setLoading(false);
-      });
-
-    return () => cancel();
-  }, []);*/
-  //return { products, error, isLoading, setProducts, setError };
 };
 
 export default useProducts;

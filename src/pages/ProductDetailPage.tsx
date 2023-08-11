@@ -7,11 +7,11 @@ export default function ProductDetailPage() {
   const { id } = useParams();
   const productId = Number(id);
 
-  const { product, error } = useProduct(productId);
+  const { data: product, error } = useProduct(productId);
   const { cartItems, dispatch } = useContext(CartContext);
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return <p>Error: {error.message}</p>;
   }
 
   return (
